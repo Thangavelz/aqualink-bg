@@ -20,7 +20,7 @@ public class OrderController {
     @PostMapping("/accept/{requestId}")
     public Order accept(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable Long requestId
+            @PathVariable("requestId") Long requestId
     ) {
         return service.acceptRequest(vendorId, requestId);
     }
@@ -29,9 +29,6 @@ public class OrderController {
     public List<Order> today(
             @RequestHeader("X-VENDOR-ID") Long vendorId
     ) {
-        return repo.findByVendorIdAndScheduledDate(
-                vendorId,
-                LocalDate.now()
-        );
+        return repo.findByVendorIdAndScheduledDate(vendorId, LocalDate.now());
     }
 }

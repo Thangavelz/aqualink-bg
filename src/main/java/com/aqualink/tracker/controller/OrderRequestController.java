@@ -18,9 +18,9 @@ public class OrderRequestController {
     @PostMapping
     public OrderRequest create(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @RequestParam Long customerId,
-            @RequestParam int quantity,
-            @RequestParam String date
+            @RequestParam("customerId") Long customerId,
+            @RequestParam("quantity") int quantity,
+            @RequestParam("date") String date
     ) {
         return service.create(
                 vendorId,

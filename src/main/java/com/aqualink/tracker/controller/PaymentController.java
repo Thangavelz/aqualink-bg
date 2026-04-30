@@ -14,9 +14,9 @@ public class PaymentController {
     @PostMapping
     public void add(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @RequestParam Long customerId,
-            @RequestParam double amount,
-            @RequestParam String method
+            @RequestParam("customerId") Long customerId,
+            @RequestParam("amount") double amount,
+            @RequestParam("method") String method
     ) {
         service.addPayment(vendorId, customerId, amount, method);
     }
