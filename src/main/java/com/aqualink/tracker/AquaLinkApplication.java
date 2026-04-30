@@ -1,0 +1,13 @@
+package com.aqualink.tracker;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AquaLinkApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AquaLinkApplication.class, args);
+	}
+
+}
