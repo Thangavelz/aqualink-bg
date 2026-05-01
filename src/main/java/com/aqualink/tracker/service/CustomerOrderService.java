@@ -1,6 +1,5 @@
 package com.aqualink.tracker.service;
 
-import com.aqualink.tracker.dto.request.CustomerPlaceOrderRequest;
 import com.aqualink.tracker.dto.response.CustomerOrderResponse;
 import com.aqualink.tracker.entity.*;
 import com.aqualink.tracker.repository.*;
