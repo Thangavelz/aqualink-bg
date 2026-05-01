@@ -14,5 +14,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findByVendorIdAndIsActiveTrue(Long vendorId);
 
+    List<Customer> findByVendorIdAndStatus(Long vendorId, String status);
+
     Optional<Customer> findByPhoneAndVendorId(String phone, Long vendorId);
+
+    /** Used during customer signup — lookup vendor by vendorCode before inserting */
+    Optional<Customer> findByPhoneAndStatus(String phone, String status);
 }

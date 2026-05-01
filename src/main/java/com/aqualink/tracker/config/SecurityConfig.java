@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -11,38 +13,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Expose BCryptPasswordEncoder as a Spring-managed bean.
+     * Injected into CustomerAuthService via constructor — do NOT use 'new BCryptPasswordEncoder()' inline.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
-            // ✅ Enable CORS
             .cors(cors -> {})
-
-            // ❌ Disable CSRF (required for API)
             .csrf(csrf -> csrf.disable())
-
-            // ❌ Disable login page completely
             .formLogin(form -> form.disable())
-
-            // ❌ Disable HTTP Basic (optional)
             .httpBasic(httpBasic -> httpBasic.disable())
-
-            // ✅ Authorization rules
             .authorizeHttpRequests(auth -> auth
-
-                // allow preflight requests (VERY IMPORTANT)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // allow all API endpoints (DEV MODE)
                 .requestMatchers("/api/**").permitAll()
-
-                // allow error & root
                 .requestMatchers("/", "/error").permitAll()
-
-                // everything else blocked (or change later)
                 .anyRequest().authenticated()
             );
-
         return http.build();
     }
 }

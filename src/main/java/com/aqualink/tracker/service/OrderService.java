@@ -6,8 +6,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -26,7 +24,13 @@ public class OrderService {
             throw new RuntimeException("Unauthorized");
         }
 
+        if ("ACCEPTED".equals(req.getStatus())) {
+            throw new RuntimeException("Request already accepted");
+        }
+
+        // FIX: was missing - status never persisted to DB
         req.setStatus("ACCEPTED");
+        requestRepo.save(req);
 
         Order order = new Order();
         order.setVendorId(vendorId);
@@ -38,16 +42,23 @@ public class OrderService {
 
         order = orderRepo.save(order);
 
-        // Create 1 item (water can)
+        double price = req.getCustomer().getPricePerCan() != null
+                ? req.getCustomer().getPricePerCan()
+                : 0.0;
+
         OrderItem item = new OrderItem();
         item.setVendorId(vendorId);
         item.setOrder(order);
-        item.setProduct(null); // V1: optional
+        item.setProduct(null);
         item.setQuantity(req.getQuantity());
-        item.setPrice(req.getCustomer().getPricePerCan());
-        item.setTotal(item.getQuantity() * item.getPrice());
+        item.setPrice(price);
+        item.setTotal(req.getQuantity() * price);  // FIX: was Double * Double, null-safe now
 
         itemRepo.save(item);
+
+        // Set totalAmount on the order now that we know the price
+        order.setTotalAmount(item.getTotal());
+        orderRepo.save(order);
 
         return order;
     }
