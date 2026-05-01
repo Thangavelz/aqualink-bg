@@ -1,5 +1,6 @@
 package com.aqualink.tracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +27,14 @@ public class Vendor {
     @Column(unique = true, nullable = false)
     private String vendorCode;
 
+    /** BCrypt-hashed password for vendor login. */
+    @JsonIgnore
+    private String passwordHash;
+
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
