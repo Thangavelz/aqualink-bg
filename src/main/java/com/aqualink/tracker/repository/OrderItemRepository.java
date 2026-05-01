@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
-    List<OrderItem> findByOrderId(Long orderId);
+    /** Used in CustomerOrderService to bulk-load items and avoid N+1 */
+    List<OrderItem> findByOrderIdIn(List<Long> orderIds);
 }

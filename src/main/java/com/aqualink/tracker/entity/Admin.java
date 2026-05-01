@@ -8,34 +8,26 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vendors")
+@Table(name = "admins")
 @Getter @Setter
-public class Vendor {
+public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String phone;
-    private String phone2;
-    private String email;
-
-    @Column(columnDefinition = "TEXT")
-    private String address;
-
-    private String logoUrl;
 
     @Column(unique = true, nullable = false)
-    private String vendorCode;
+    private String email;
 
     @JsonIgnore
     private String passwordHash;
 
-    private String status = "ACTIVE";
-
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void prePersist() { this.createdAt = LocalDateTime.now(); }
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
