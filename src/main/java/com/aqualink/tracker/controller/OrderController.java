@@ -27,7 +27,7 @@ public class OrderController {
     @PostMapping("/accept/{requestId}")
     public OrderResponse accept(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable("requestId") Long requestId,
+            @PathVariable Long requestId,
             @RequestParam(value = "deliveryDate", required = false) String deliveryDate
     ) {
         LocalDate date = (deliveryDate != null && !deliveryDate.isBlank())
@@ -39,7 +39,7 @@ public class OrderController {
     @PostMapping("/reject/{requestId}")
     public void reject(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable("requestId") Long requestId,
+            @PathVariable Long requestId,
             @RequestParam(value = "reason", required = false, defaultValue = "Order rejected by vendor") String reason
     ) {
         service.rejectRequest(vendorId, requestId, reason);
