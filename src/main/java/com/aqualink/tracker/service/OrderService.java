@@ -1,12 +1,10 @@
 package com.aqualink.tracker.service;
 
 import com.aqualink.tracker.entity.*;
+import java.time.LocalDate;
 import com.aqualink.tracker.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +18,7 @@ public class OrderService {
     @Transactional
     public Order acceptRequest(Long vendorId, Long requestId, LocalDate deliveryDate) {
 
-        OrderRequest req = requestRepo.findById(requestId)
+        OrderRequest req = requestRepo.findByIdWithCustomer(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         if (!req.getVendorId().equals(vendorId)) {
@@ -63,12 +61,14 @@ public class OrderService {
         order.setTotalAmount(item.getTotal());
         orderRepo.save(order);
 
-        return order;
+        // Reload with eager customer fetch so OrderMapper.toDto() won't hit lazy load
+        return orderRepo.findByIdWithCustomer(order.getId())
+                .orElse(order);
     }
 
     @Transactional
     public void rejectRequest(Long vendorId, Long requestId, String reason) {
-        OrderRequest req = requestRepo.findById(requestId)
+        OrderRequest req = requestRepo.findByIdWithCustomer(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         if (!req.getVendorId().equals(vendorId)) {
             throw new RuntimeException("Unauthorized");

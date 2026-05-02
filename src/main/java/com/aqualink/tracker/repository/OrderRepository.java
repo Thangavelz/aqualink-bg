@@ -14,6 +14,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findByIdAndVendorId(Long id, Long vendorId);
 
+    @Query("SELECT o FROM Order o JOIN FETCH o.customer WHERE o.id = :id")
+    Optional<Order> findByIdWithCustomer(@Param("id") Long id);
+
     @Query("SELECT o FROM Order o JOIN FETCH o.customer WHERE o.customer.id = :customerId AND o.vendorId = :vendorId ORDER BY o.scheduledDate DESC")
     List<Order> findByCustomerIdAndVendorIdOrderByScheduledDateDesc(
             @Param("customerId") Long customerId,
