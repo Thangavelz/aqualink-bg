@@ -29,7 +29,7 @@ public class DevToolsController {
 
     /** POST /dev/vendor/2/set-password?password=admin123  → sets it directly */
     @PostMapping("/vendor/{id}/set-password")
-    public String setPassword(@PathVariable Long id, @RequestParam String password) {
+    public String setPassword(@PathVariable("id") Long id, @RequestParam String password) {
         Vendor v = vendorRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
         v.setPasswordHash(passwordEncoder.encode(password));

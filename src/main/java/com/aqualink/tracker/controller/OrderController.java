@@ -27,9 +27,22 @@ public class OrderController {
     @PostMapping("/accept/{requestId}")
     public OrderResponse accept(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable Long requestId
+            @PathVariable("requestId") Long requestId,
+            @RequestParam(value = "deliveryDate", required = false) String deliveryDate
     ) {
-        return OrderMapper.toDto(service.acceptRequest(vendorId, requestId));
+        LocalDate date = (deliveryDate != null && !deliveryDate.isBlank())
+                ? LocalDate.parse(deliveryDate)
+                : null;
+        return OrderMapper.toDto(service.acceptRequest(vendorId, requestId, date));
+    }
+
+    @PostMapping("/reject/{requestId}")
+    public void reject(
+            @RequestHeader("X-VENDOR-ID") Long vendorId,
+            @PathVariable("requestId") Long requestId,
+            @RequestParam(value = "reason", required = false, defaultValue = "Order rejected by vendor") String reason
+    ) {
+        service.rejectRequest(vendorId, requestId, reason);
     }
 
     /**

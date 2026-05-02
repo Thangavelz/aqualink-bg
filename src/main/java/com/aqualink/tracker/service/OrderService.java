@@ -4,6 +4,9 @@ import com.aqualink.tracker.entity.*;
 import com.aqualink.tracker.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +18,7 @@ public class OrderService {
     private final OrderItemRepository itemRepo;
 
     @Transactional
-    public Order acceptRequest(Long vendorId, Long requestId) {
+    public Order acceptRequest(Long vendorId, Long requestId, LocalDate deliveryDate) {
 
         OrderRequest req = requestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
@@ -38,7 +41,7 @@ public class OrderService {
         order.setSource("REQUEST");
         order.setSourceId(req.getId());
         order.setStatus("PENDING");
-        order.setScheduledDate(req.getRequestedDate());
+        order.setScheduledDate(deliveryDate != null ? deliveryDate : req.getRequestedDate());
 
         order = orderRepo.save(order);
 
@@ -61,5 +64,17 @@ public class OrderService {
         orderRepo.save(order);
 
         return order;
+    }
+
+    @Transactional
+    public void rejectRequest(Long vendorId, Long requestId, String reason) {
+        OrderRequest req = requestRepo.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+        if (!req.getVendorId().equals(vendorId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        req.setStatus("REJECTED");
+        req.setNotes(reason);
+        requestRepo.save(req);
     }
 }

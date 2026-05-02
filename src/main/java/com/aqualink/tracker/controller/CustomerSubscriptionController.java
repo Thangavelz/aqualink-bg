@@ -52,7 +52,7 @@ public class CustomerSubscriptionController {
     public ResponseEntity<Void> cancel(
             @RequestHeader("X-CUSTOMER-ID") Long customerId,
             @RequestHeader("X-VENDOR-ID")   Long vendorId,
-            @PathVariable Long id
+            @PathVariable("id") Long id
     ) {
         subService.cancel(customerId, vendorId, id);
         return ResponseEntity.noContent().build();

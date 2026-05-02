@@ -17,7 +17,7 @@ public class LedgerController {
     @GetMapping("/{customerId}")
     public List<LedgerEntry> getLedger(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable Long customerId
+            @PathVariable("customerId") Long customerId
     ) {
         return repo.findByVendorIdAndCustomerIdOrderByCreatedAtDesc(
                 vendorId,

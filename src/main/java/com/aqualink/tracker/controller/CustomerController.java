@@ -32,7 +32,7 @@ public class CustomerController {
     @GetMapping("/{id}")
     public Customer get(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable Long id
+            @PathVariable("id") Long id
     ) {
         return service.get(vendorId, id);
     }
@@ -40,7 +40,7 @@ public class CustomerController {
     @PutMapping("/{id}")
     public Customer update(
             @RequestHeader("X-VENDOR-ID") Long vendorId,
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody Customer c
     ) {
         return service.update(vendorId, id, c);
